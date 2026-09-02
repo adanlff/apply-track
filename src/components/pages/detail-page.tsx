@@ -97,15 +97,7 @@ export default function DetailPage() {
   return (
     <div className="min-h-screen bg-surface-base">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-6">
-        {/* ── Page title ── */}
-        <div>
-          <h1 className="text-golden-h3 font-bold text-slate-900 tracking-tight mb-1">
-            ApplyTrack
-          </h1>
-          <p className="text-golden-sm text-slate-500">
-            Platform pelacak proses rekrutmen dan pencarian kerja dalam satu tempat.
-          </p>
-        </div>
+
 
         <ApplicationDetail
           application={application}
