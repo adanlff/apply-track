@@ -1,0 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+  }
+
+  /* Use direct values — @apply can't resolve nested custom tokens in @layer base */
+  body {
+    background-color: #F8FAFC;
+    color: #1E293B;
+    font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+  }
+
+  :focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px #fff, 0 0 0 4px rgba(29, 69, 51, 0.45);
+  }
+
+  ::selection {
+    background-color: #C7D8CE;
+    color: #132D22;
+  }
+
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: #F1F5F9; }
+  ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 9999px; }
+  ::-webkit-scrollbar-thumb:hover { background: #3D7A5E; }
+}
+
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+}

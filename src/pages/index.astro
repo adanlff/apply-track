@@ -1,0 +1,11 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ApplyTrackApp from '../components/applytrack-app';
+---
+
+<Layout
+  title="ApplyTrack · Lacak Lamaran Kerja"
+  description="ApplyTrack membantu job seeker, fresh graduate, dan profesional untuk mencatat dan memantau lamaran kerja dalam satu tempat yang terorganisir."
+>
+  <ApplyTrackApp client:only="react" />
+</Layout>
