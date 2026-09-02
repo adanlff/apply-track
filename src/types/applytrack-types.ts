@@ -66,6 +66,7 @@ export interface AppState {
   selectedId: string | null;
   searchQuery: string;
   filterStatus: FilterStatus;
+  filterLocation: string;
   filterDateFrom: string;
   filterDateTo: string;
   sortKey: SortKey;
@@ -84,6 +85,7 @@ export type AppAction =
   | { type: 'SET_VIEW'; payload: { mode: ViewMode; id?: string } }
   | { type: 'SET_SEARCH'; payload: string }
   | { type: 'SET_FILTER_STATUS'; payload: FilterStatus }
+  | { type: 'SET_FILTER_LOCATION'; payload: string }
   | { type: 'SET_FILTER_DATE'; payload: { from: string; to: string } }
   | { type: 'SET_SORT'; payload: { key: SortKey; dir: SortDir } };
 

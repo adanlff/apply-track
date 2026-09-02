@@ -20,6 +20,7 @@ const initialState: AppState = {
   selectedId: null,
   searchQuery: '',
   filterStatus: 'all',
+  filterLocation: 'all',
   filterDateFrom: '',
   filterDateTo: '',
   sortKey: 'appliedDate',
@@ -51,9 +52,10 @@ function reducer(state: AppState, action: AppAction): AppState {
       };
     case 'SET_VIEW':   return { ...state, viewMode: action.payload.mode, selectedId: action.payload.id ?? null };
     case 'SET_SEARCH': return { ...state, searchQuery: action.payload };
-    case 'SET_FILTER_STATUS': return { ...state, filterStatus: action.payload };
-    case 'SET_FILTER_DATE':   return { ...state, filterDateFrom: action.payload.from, filterDateTo: action.payload.to };
-    case 'SET_SORT':          return { ...state, sortKey: action.payload.key, sortDir: action.payload.dir };
+    case 'SET_FILTER_STATUS':   return { ...state, filterStatus: action.payload };
+    case 'SET_FILTER_LOCATION': return { ...state, filterLocation: action.payload };
+    case 'SET_FILTER_DATE':     return { ...state, filterDateFrom: action.payload.from, filterDateTo: action.payload.to };
+    case 'SET_SORT':            return { ...state, sortKey: action.payload.key, sortDir: action.payload.dir };
     default: return state;
   }
 }
@@ -71,6 +73,9 @@ function deriveFilteredList(state: AppState): JobApplication[] {
     );
   }
   if (state.filterStatus !== 'all') list = list.filter((a) => a.status === state.filterStatus);
+  if (state.filterLocation && state.filterLocation !== 'all') {
+    list = list.filter((a) => a.location?.toLowerCase().trim() === state.filterLocation.toLowerCase().trim());
+  }
   if (state.filterDateFrom) list = list.filter((a) => a.appliedDate >= state.filterDateFrom);
   if (state.filterDateTo)   list = list.filter((a) => a.appliedDate <= state.filterDateTo);
 
@@ -102,8 +107,11 @@ export default function ApplyTrackApp() {
 
   const filteredList = deriveFilteredList(state);
   const hasFilters =
-    state.searchQuery !== '' || state.filterStatus !== 'all' ||
-    state.filterDateFrom !== '' || state.filterDateTo !== '';
+    state.searchQuery !== '' ||
+    state.filterStatus !== 'all' ||
+    (state.filterLocation !== 'all' && state.filterLocation !== '') ||
+    state.filterDateFrom !== '' ||
+    state.filterDateTo !== '';
 
   const selectedApp = state.selectedId
     ? state.applications.find((a) => a.id === state.selectedId)
@@ -207,29 +215,15 @@ export default function ApplyTrackApp() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-6">
 
         {/* ── Page title ── */}
-        <div className="flex items-end justify-between gap-4">
-          <div>
-            <h1 className="text-golden-h3 font-bold text-slate-900 tracking-tight mb-1">
-              ApplyTrack
-            </h1>
-            <p className="text-golden-sm text-slate-400">
-              {state.applications.length > 0
-                ? `${state.applications.length} lamaran tercatat`
-                : 'Lacak semua lamaran kerja dalam satu tempat'}
-            </p>
-          </div>
-
-          {/* Tombol tambah — hanya muncul kalau form belum terbuka */}
-          {!showAddForm && (
-            <AppButton
-              variant="primary"
-              size="md"
-              onClick={() => setShowAddForm(true)}
-            >
-              <Plus size={16} aria-hidden="true" />
-              Tambah Lamaran
-            </AppButton>
-          )}
+        <div>
+          <h1 className="text-golden-h3 font-bold text-slate-900 tracking-tight mb-1">
+            ApplyTrack
+          </h1>
+          <p className="text-golden-sm text-slate-400">
+            {state.applications.length > 0
+              ? `${state.applications.length} lamaran tercatat`
+              : 'Lacak semua lamaran kerja dalam satu tempat'}
+          </p>
         </div>
 
         {/* ── Statistik ── */}
@@ -266,6 +260,23 @@ export default function ApplyTrackApp() {
           </div>
         )}
 
+        {/* ── Action bar: Tombol Tambah Lamaran di atas filter ── */}
+        <div className="flex items-center justify-between pt-2">
+          <h2 className="text-golden-h4 font-bold text-slate-800">
+            Daftar Lamaran
+          </h2>
+          {!showAddForm && (
+            <AppButton
+              variant="primary"
+              size="md"
+              onClick={() => setShowAddForm(true)}
+            >
+              <Plus size={16} aria-hidden="true" />
+              Tambah Lamaran
+            </AppButton>
+          )}
+        </div>
+
         {/* ── Search + Filter ── */}
         <div className="bg-white border border-surface-border rounded-lg shadow-card p-4 space-y-3">
           <SearchBar
@@ -273,14 +284,14 @@ export default function ApplyTrackApp() {
             onChange={(v) => dispatch({ type: 'SET_SEARCH', payload: v })}
           />
           <FilterBar
+            applications={state.applications}
             filterStatus={state.filterStatus}
+            filterLocation={state.filterLocation}
             filterDateFrom={state.filterDateFrom}
             filterDateTo={state.filterDateTo}
-            sortKey={state.sortKey}
-            sortDir={state.sortDir}
             onFilterStatus={(v) => dispatch({ type: 'SET_FILTER_STATUS', payload: v })}
+            onFilterLocation={(loc) => dispatch({ type: 'SET_FILTER_LOCATION', payload: loc })}
             onFilterDate={(from, to) => dispatch({ type: 'SET_FILTER_DATE', payload: { from, to } })}
-            onSort={(key, dir) => dispatch({ type: 'SET_SORT', payload: { key, dir } })}
           />
           {!state.isLoading && hasFilters && (
             <p className="text-golden-sm text-slate-400" aria-live="polite">

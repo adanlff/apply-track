@@ -32,11 +32,6 @@ const SOURCE_ITEMS: DropdownItem[] = SOURCE_OPTIONS.map((s) => ({
   value: s,
 }));
 
-const CURRENCY_ITEMS: DropdownItem[] = ['IDR', 'USD', 'SGD', 'MYR'].map((c) => ({
-  text: c,
-  value: c,
-}));
-
 function getInitialFormData(app?: JobApplication): ApplicationFormData {
   if (!app) {
     return {
@@ -65,7 +60,7 @@ function getInitialFormData(app?: JobApplication): ApplicationFormData {
     status: app.status,
     salaryMin: app.salaryMin?.toString() ?? '',
     salaryMax: app.salaryMax?.toString() ?? '',
-    currency: app.currency,
+    currency: app.currency ?? 'IDR',
     notes: app.notes ?? '',
   };
 }
@@ -77,12 +72,6 @@ function validate(data: ApplicationFormData): FormErrors {
   if (!data.appliedDate) errors.appliedDate = 'Tanggal melamar wajib diisi.';
   if (data.jobUrl && !/^https?:\/\//.test(data.jobUrl)) {
     errors.jobUrl = 'URL harus diawali dengan http:// atau https://';
-  }
-  if (data.salaryMin && isNaN(Number(data.salaryMin))) {
-    errors.salaryMin = 'Gaji minimum harus berupa angka.';
-  }
-  if (data.salaryMax && isNaN(Number(data.salaryMax))) {
-    errors.salaryMax = 'Gaji maksimum harus berupa angka.';
   }
   return errors;
 }
@@ -133,9 +122,7 @@ export function ApplicationForm({ initial, onSave, onCancel, inlineMode = false 
         source: formData.source,
         jobUrl: formData.jobUrl.trim() || undefined,
         status: formData.status,
-        salaryMin: formData.salaryMin ? Number(formData.salaryMin) : undefined,
-        salaryMax: formData.salaryMax ? Number(formData.salaryMax) : undefined,
-        currency: formData.currency,
+        currency: 'IDR',
         notes: formData.notes.trim() || undefined,
         statusHistory: statusChanged
           ? [...(initial?.statusHistory ?? []), historyEntry]
@@ -204,10 +191,10 @@ export function ApplicationForm({ initial, onSave, onCancel, inlineMode = false 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <FormField
               id="field-location"
-              label="Lokasi"
+              label="Lokasi / Kota"
               as="input"
               type="text"
-              placeholder="Contoh: Jakarta, Remote"
+              placeholder="Contoh: Jakarta, Surabaya, Remote"
               value={formData.location}
               onChange={(e) => set('location', e.target.value)}
             />
@@ -283,45 +270,6 @@ export function ApplicationForm({ initial, onSave, onCancel, inlineMode = false 
               value={formData.jobUrl}
               onChange={(e) => set('jobUrl', e.target.value)}
               onBlur={() => handleBlur('jobUrl')}
-            />
-          </div>
-
-          {/* Row: Salary */}
-          <div className="grid grid-cols-3 gap-3">
-            <div className="flex flex-col gap-1.5">
-              <label htmlFor="field-currency" className="text-golden-sm font-semibold text-slate-700">
-                Mata Uang
-              </label>
-              <StaggeredDropDown
-                id="field-currency"
-                items={CURRENCY_ITEMS}
-                selectedValue={formData.currency}
-                onSelect={(val) => set('currency', val)}
-              />
-            </div>
-            <FormField
-              id="field-salary-min"
-              label="Gaji Min."
-              error={errors.salaryMin}
-              as="input"
-              type="number"
-              placeholder="5000000"
-              value={formData.salaryMin}
-              onChange={(e) => set('salaryMin', e.target.value)}
-              onBlur={() => handleBlur('salaryMin')}
-              min="0"
-            />
-            <FormField
-              id="field-salary-max"
-              label="Gaji Maks."
-              error={errors.salaryMax}
-              as="input"
-              type="number"
-              placeholder="8000000"
-              value={formData.salaryMax}
-              onChange={(e) => set('salaryMax', e.target.value)}
-              onBlur={() => handleBlur('salaryMax')}
-              min="0"
             />
           </div>
 

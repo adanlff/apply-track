@@ -1,8 +1,18 @@
 import type { JobApplication } from '../../types/applytrack-types';
+import { JOB_TYPE_LABELS } from '../../types/applytrack-types';
 import { AppBadge } from '../atoms/app-badge';
-import { AppButton } from '../atoms/app-button';
-import { formatDate, formatSalary, daysSince, truncate } from '../../lib/utils';
-import { Building2, MapPin, Calendar, Briefcase, ExternalLink, Edit2, Trash2 } from 'lucide-react';
+import { formatDate, daysSince, truncate } from '../../lib/utils';
+import {
+  Building2,
+  MapPin,
+  Calendar,
+  Briefcase,
+  ExternalLink,
+  Edit2,
+  Trash2,
+  FileText,
+  Globe,
+} from 'lucide-react';
 
 interface ApplicationCardProps {
   application: JobApplication;
@@ -13,100 +23,119 @@ interface ApplicationCardProps {
 
 export function ApplicationCard({ application, onView, onEdit, onDelete }: ApplicationCardProps) {
   const days = daysSince(application.appliedDate);
-  const salary = formatSalary(application.salaryMin, application.salaryMax, application.currency);
+  const companyInitials = application.company
+    ? application.company.slice(0, 2).toUpperCase()
+    : 'AT';
 
   return (
     <article
-      className="group relative bg-white border border-surface-border rounded-lg p-4
-        hover:border-brand-300 hover:shadow-card-hover shadow-card
-        transition-all duration-200 cursor-pointer"
       onClick={() => onView(application.id)}
+      className="group relative bg-white border border-surface-border rounded-lg p-5
+        shadow-card hover:border-neutral-400 transition-all duration-200
+        cursor-pointer flex flex-col justify-between"
     >
-      {/* Header row */}
-      <div className="flex items-start justify-between gap-3 mb-2.5">
-        <div className="min-w-0">
-          <h3 className="text-golden-h4 font-semibold text-slate-900 break-words leading-snug">
-            {application.position}
-          </h3>
-          <div className="flex items-center gap-1.5 mt-1 text-golden-base text-slate-500">
-            <Building2 size={13} aria-hidden="true" className="shrink-0 text-brand-500" />
-            <span className="break-words">{application.company}</span>
+      {/* ── Top Header: Company Avatar + Position Title + Status Badge ── */}
+      <div>
+        <div className="flex items-start justify-between gap-3 mb-3">
+          <div className="flex items-center gap-3 min-w-0">
+            {/* Company Avatar Badge */}
+            <div className="w-10 h-10 rounded-md bg-neutral-100 border border-neutral-200 flex items-center justify-center shrink-0 text-slate-700 font-bold text-xs">
+              {companyInitials}
+            </div>
+            <div className="min-w-0">
+              <h3 className="text-base font-bold text-slate-900 group-hover:text-brand-600 transition-colors truncate">
+                {application.position}
+              </h3>
+              <p className="text-sm font-medium text-slate-500 truncate">
+                {application.company}
+              </p>
+            </div>
+          </div>
+
+          <div className="shrink-0">
+            <AppBadge status={application.status} size="sm" />
           </div>
         </div>
-        <AppBadge status={application.status} size="sm" />
-      </div>
 
-      {/* Meta row */}
-      <div className="flex flex-wrap gap-x-3 gap-y-1 text-golden-sm text-slate-400 mb-3">
-        {application.location && (
-          <span className="flex items-center gap-1">
-            <MapPin size={11} aria-hidden="true" />
-            {application.location}
-          </span>
-        )}
-        <span className="flex items-center gap-1">
-          <Calendar size={11} aria-hidden="true" />
-          {formatDate(application.appliedDate)}
-          <span className="text-slate-300">· {days}h</span>
-        </span>
-        <span className="flex items-center gap-1">
-          <Briefcase size={11} aria-hidden="true" />
-          {application.source}
-        </span>
-      </div>
-
-      {/* Salary & URL */}
-      {(salary !== '-' || application.jobUrl) && (
-        <div className="flex items-center gap-3 mb-2.5 text-golden-sm">
-          {salary !== '-' && (
-            <span className="text-brand-600 font-semibold">{salary}</span>
+        {/* ── Meta Pills Row ── */}
+        <div className="flex flex-wrap gap-1.5 my-3">
+          {application.location && (
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-neutral-50 border border-neutral-200/80 text-slate-600 text-xs font-medium">
+              <MapPin size={11} className="text-slate-400 shrink-0" aria-hidden="true" />
+              <span className="truncate max-w-[140px]">{application.location}</span>
+            </span>
           )}
+
+          {application.jobType && (
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-neutral-50 border border-neutral-200/80 text-slate-600 text-xs font-medium">
+              <Briefcase size={11} className="text-slate-400 shrink-0" aria-hidden="true" />
+              <span>{JOB_TYPE_LABELS[application.jobType] || application.jobType}</span>
+            </span>
+          )}
+
+          {application.source && (
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-neutral-50 border border-neutral-200/80 text-slate-600 text-xs font-medium">
+              <Globe size={11} className="text-slate-400 shrink-0" aria-hidden="true" />
+              <span>{application.source}</span>
+            </span>
+          )}
+        </div>
+
+        {/* ── Notes Preview (if any) ── */}
+        {application.notes && (
+          <div className="mt-2.5 p-2 rounded-md bg-neutral-50 border border-neutral-100 text-xs text-slate-500 flex items-start gap-1.5">
+            <FileText size={12} className="text-slate-400 mt-0.5 shrink-0" aria-hidden="true" />
+            <p className="line-clamp-2 leading-relaxed italic">
+              {truncate(application.notes, 90)}
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* ── Card Footer: Date & Actions ── */}
+      <div className="mt-4 pt-3 border-t border-neutral-100 flex items-center justify-between text-xs text-slate-400">
+        <div className="flex items-center gap-1">
+          <Calendar size={12} className="text-slate-400" aria-hidden="true" />
+          <span>
+            {formatDate(application.appliedDate)}
+            <span className="text-slate-300 ml-1">
+              ({days === 0 ? 'Hari ini' : `${days} hari lalu`})
+            </span>
+          </span>
+        </div>
+
+        <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
           {application.jobUrl && (
             <a
               href={application.jobUrl}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
-              className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-700 transition-colors"
+              className="p-1.5 rounded-md text-blue-600 hover:text-blue-700 hover:bg-blue-50 transition-colors"
+              title="Buka link lowongan"
               aria-label={`Buka link lowongan ${application.position}`}
             >
-              <ExternalLink size={11} aria-hidden="true" />
-              Lihat lowongan
+              <ExternalLink size={14} />
             </a>
           )}
+          <button
+            type="button"
+            onClick={() => onEdit(application.id)}
+            className="p-1.5 rounded-md text-slate-400 hover:text-slate-700 hover:bg-neutral-100 transition-colors"
+            title="Edit lamaran"
+            aria-label={`Edit lamaran ${application.position}`}
+          >
+            <Edit2 size={13} />
+          </button>
+          <button
+            type="button"
+            onClick={() => onDelete(application.id)}
+            className="p-1.5 rounded-md text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+            title="Hapus lamaran"
+            aria-label={`Hapus lamaran ${application.position}`}
+          >
+            <Trash2 size={13} />
+          </button>
         </div>
-      )}
-
-      {/* Notes preview */}
-      {application.notes && (
-        <p className="text-golden-sm text-slate-400 italic border-t border-surface-border pt-2 mt-2 break-words">
-          {truncate(application.notes, 100)}
-        </p>
-      )}
-
-      {/* Action buttons on hover */}
-      <div
-        className="absolute top-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <AppButton
-          variant="ghost"
-          size="sm"
-          onClick={() => onEdit(application.id)}
-          aria-label={`Edit lamaran ${application.position}`}
-          className="h-8 w-8 p-0"
-        >
-          <Edit2 size={13} />
-        </AppButton>
-        <AppButton
-          variant="ghost"
-          size="sm"
-          onClick={() => onDelete(application.id)}
-          aria-label={`Hapus lamaran ${application.position}`}
-          className="h-8 w-8 p-0 hover:text-red-500 hover:bg-red-50 hover:border-red-200"
-        >
-          <Trash2 size={13} />
-        </AppButton>
       </div>
     </article>
   );

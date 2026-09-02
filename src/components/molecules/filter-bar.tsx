@@ -1,18 +1,19 @@
+import { useMemo } from 'react';
 import { StaggeredDropDown, type DropdownItem } from '../atoms/staggered-dropdown';
 import { DatePicker } from '../atoms/date-picker';
-import type { FilterStatus, ApplicationStatus, SortKey, SortDir } from '../../types/applytrack-types';
+import type { FilterStatus, ApplicationStatus, JobApplication } from '../../types/applytrack-types';
 import { STATUS_LABELS } from '../../types/applytrack-types';
-import { Calendar, Building2, Briefcase, Tag } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 
 interface FilterBarProps {
+  applications: JobApplication[];
   filterStatus: FilterStatus;
+  filterLocation: string;
   filterDateFrom: string;
   filterDateTo: string;
-  sortKey: SortKey;
-  sortDir: SortDir;
   onFilterStatus: (value: FilterStatus) => void;
+  onFilterLocation: (value: string) => void;
   onFilterDate: (from: string, to: string) => void;
-  onSort: (key: SortKey, dir: SortDir) => void;
 }
 
 const STATUS_ITEMS: DropdownItem[] = [
@@ -23,23 +24,33 @@ const STATUS_ITEMS: DropdownItem[] = [
   })),
 ];
 
-const SORT_ITEMS: DropdownItem[] = [
-  { text: 'Tanggal Melamar', value: 'appliedDate', icon: Calendar },
-  { text: 'Perusahaan', value: 'company', icon: Building2 },
-  { text: 'Posisi', value: 'position', icon: Briefcase },
-  { text: 'Status', value: 'status', icon: Tag },
-];
-
 export function FilterBar({
+  applications,
   filterStatus,
+  filterLocation,
   filterDateFrom,
   filterDateTo,
-  sortKey,
-  sortDir,
   onFilterStatus,
+  onFilterLocation,
   onFilterDate,
-  onSort,
 }: FilterBarProps) {
+  // Extract unique locations dynamically from current applications
+  const locationItems: DropdownItem[] = useMemo(() => {
+    const locs = applications
+      .map((a) => a.location?.trim())
+      .filter((loc): loc is string => Boolean(loc));
+    const unique = Array.from(new Set(locs)).sort((a, b) => a.localeCompare(b));
+
+    return [
+      { text: 'Semua Kota', value: 'all', icon: MapPin },
+      ...unique.map((loc) => ({
+        text: loc,
+        value: loc,
+        icon: MapPin,
+      })),
+    ];
+  }, [applications]);
+
   return (
     <div className="flex flex-wrap gap-2 items-center">
       {/* Status filter with StaggeredDropDown */}
@@ -78,30 +89,16 @@ export function FilterBar({
         />
       </div>
 
-      {/* Sort with StaggeredDropDown */}
-      <div className="flex gap-1.5 ml-auto">
-        <div className="w-48">
-          <StaggeredDropDown
-            id="sort-key"
-            aria-label="Urutkan berdasarkan"
-            items={SORT_ITEMS}
-            selectedValue={sortKey}
-            onSelect={(val) => onSort(val as SortKey, sortDir)}
-            placeholder="Urutkan"
-          />
-        </div>
-        <button
-          id="sort-direction"
-          onClick={() => onSort(sortKey, sortDir === 'asc' ? 'desc' : 'asc')}
-          aria-label={`Urutan ${sortDir === 'asc' ? 'naik' : 'turun'}, klik untuk balik`}
-          className="h-11 w-11 flex items-center justify-center rounded-md
-            bg-white border border-neutral-300 text-slate-600 hover:text-slate-900
-            hover:border-neutral-400 hover:bg-neutral-50 transition-all
-            focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500
-            focus-visible:ring-offset-1 focus-visible:ring-offset-white"
-        >
-          {sortDir === 'asc' ? '↑' : '↓'}
-        </button>
+      {/* Dynamic City / Location Filter with StaggeredDropDown */}
+      <div className="w-48 ml-auto">
+        <StaggeredDropDown
+          id="filter-location"
+          aria-label="Filter berdasarkan kota"
+          items={locationItems}
+          selectedValue={filterLocation || 'all'}
+          onSelect={onFilterLocation}
+          placeholder="Pilih Kota"
+        />
       </div>
     </div>
   );

@@ -2,7 +2,7 @@ import type { JobApplication } from '../../types/applytrack-types';
 import { STATUS_LABELS, JOB_TYPE_LABELS } from '../../types/applytrack-types';
 import { AppBadge } from '../atoms/app-badge';
 import { AppButton } from '../atoms/app-button';
-import { formatDate, formatSalary, daysSince } from '../../lib/utils';
+import { formatDate, daysSince } from '../../lib/utils';
 import {
   ArrowLeft,
   Building2,
@@ -14,7 +14,6 @@ import {
   Trash2,
   Clock,
   FileText,
-  DollarSign,
 } from 'lucide-react';
 
 interface ApplicationDetailProps {
@@ -25,7 +24,6 @@ interface ApplicationDetailProps {
 }
 
 export function ApplicationDetail({ application, onBack, onEdit, onDelete }: ApplicationDetailProps) {
-  const salary = formatSalary(application.salaryMin, application.salaryMax, application.currency);
   const days = daysSince(application.appliedDate);
 
   return (
@@ -77,9 +75,6 @@ export function ApplicationDetail({ application, onBack, onEdit, onDelete }: App
             value={JOB_TYPE_LABELS[application.jobType]}
           />
           <InfoItem icon={<ExternalLink size={13} />} label="Sumber" value={application.source} />
-          {salary !== '-' && (
-            <InfoItem icon={<DollarSign size={13} />} label="Estimasi Gaji" value={salary} />
-          )}
         </div>
 
         {application.jobUrl && (
@@ -100,34 +95,34 @@ export function ApplicationDetail({ application, onBack, onEdit, onDelete }: App
       {/* Notes */}
       {application.notes && (
         <div className="bg-white border border-surface-border rounded-lg shadow-card p-5 mb-4">
-          <h3 className="text-golden-sm font-semibold text-slate-500 uppercase tracking-wider flex items-center gap-2 mb-3">
-            <FileText size={13} aria-hidden="true" />
-            Catatan
-          </h3>
-          <p className="text-golden-base text-slate-700 whitespace-pre-wrap break-words">
-            {application.notes}
-          </p>
+          <div className="flex items-center gap-2 mb-2 text-golden-sm font-semibold text-slate-700">
+            <FileText size={14} className="text-brand-500" aria-hidden="true" />
+            <span>Catatan</span>
+          </div>
+          <p className="text-golden-base text-slate-600 whitespace-pre-wrap">{application.notes}</p>
         </div>
       )}
 
-      {/* Status history timeline */}
-      {application.statusHistory.length > 0 && (
+      {/* Status History */}
+      {application.statusHistory && application.statusHistory.length > 0 && (
         <div className="bg-white border border-surface-border rounded-lg shadow-card p-5">
-          <h3 className="text-golden-sm font-semibold text-slate-500 uppercase tracking-wider flex items-center gap-2 mb-4">
-            <Clock size={13} aria-hidden="true" />
-            Riwayat Status
-          </h3>
-          <ol className="relative border-l-2 border-surface-border pl-4 space-y-4">
-            {[...application.statusHistory].reverse().map((entry, i) => (
-              <li key={i} className="relative">
-                <span className="absolute -left-[1.25rem] w-3.5 h-3.5 rounded-full bg-brand-500 border-2 border-white top-0.5 shadow-sm" aria-hidden="true" />
-                <div className="text-golden-sm">
-                  <span className="font-semibold text-slate-800">{STATUS_LABELS[entry.status]}</span>
-                  <span className="text-slate-400 ml-2">{formatDate(entry.changedAt)}</span>
-                  {entry.note && (
-                    <p className="text-slate-500 mt-0.5">{entry.note}</p>
-                  )}
+          <div className="flex items-center gap-2 mb-4 text-golden-sm font-semibold text-slate-700">
+            <Clock size={14} className="text-brand-500" aria-hidden="true" />
+            <span>Riwayat Status</span>
+          </div>
+          <ol className="relative border-l border-surface-border ml-3 space-y-4">
+            {[...application.statusHistory].reverse().map((entry, idx) => (
+              <li key={idx} className="ml-4">
+                <span className="absolute -left-1.5 mt-1.5 h-3 w-3 rounded-full border-2 border-white bg-brand-500" />
+                <div className="flex items-center gap-2">
+                  <AppBadge status={entry.status} size="sm" />
+                  <time className="text-golden-xs text-slate-400">
+                    {formatDate(entry.changedAt)}
+                  </time>
                 </div>
+                {entry.note && (
+                  <p className="text-golden-sm text-slate-500 mt-1">{entry.note}</p>
+                )}
               </li>
             ))}
           </ol>
@@ -140,11 +135,11 @@ export function ApplicationDetail({ application, onBack, onEdit, onDelete }: App
 function InfoItem({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
     <div>
-      <dt className="text-golden-xs text-slate-400 uppercase tracking-wider flex items-center gap-1 mb-0.5">
-        <span aria-hidden="true" className="text-slate-400">{icon}</span>
-        {label}
-      </dt>
-      <dd className="text-golden-sm text-slate-700 font-medium break-words">{value}</dd>
+      <div className="flex items-center gap-1 text-golden-xs text-slate-400 mb-0.5">
+        <span className="text-brand-500">{icon}</span>
+        <span>{label}</span>
+      </div>
+      <div className="text-golden-sm font-medium text-slate-800 break-words">{value}</div>
     </div>
   );
 }
