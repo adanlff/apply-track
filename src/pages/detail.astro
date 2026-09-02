@@ -1,0 +1,11 @@
+---
+import Layout from '../layouts/layout.astro';
+import DetailPage from '../components/pages/detail-page';
+---
+
+<Layout
+  title="Detail Lamaran · ApplyTrack"
+  description="Lihat informasi lengkap dan riwayat proses seleksi lamaran kerja di ApplyTrack."
+>
+  <DetailPage client:only="react" />
+</Layout>

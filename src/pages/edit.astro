@@ -1,0 +1,11 @@
+---
+import Layout from '../layouts/layout.astro';
+import EditPage from '../components/pages/edit-page';
+---
+
+<Layout
+  title="Edit Lamaran · ApplyTrack"
+  description="Perbarui data dan informasi lamaran kerja di ApplyTrack."
+>
+  <EditPage client:only="react" />
+</Layout>

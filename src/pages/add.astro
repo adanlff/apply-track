@@ -1,0 +1,11 @@
+---
+import Layout from '../layouts/layout.astro';
+import AddPage from '../components/pages/add-page';
+---
+
+<Layout
+  title="Tambah Lamaran Baru · ApplyTrack"
+  description="Catat dan pantau detail lowongan kerja baru yang kamu lamar di ApplyTrack."
+>
+  <AddPage client:only="react" />
+</Layout>

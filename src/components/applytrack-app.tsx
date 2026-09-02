@@ -10,7 +10,7 @@ import { ApplicationForm } from './organisms/application-form';
 import { ApplicationDetail } from './organisms/application-detail';
 import { StatsPanel } from './organisms/stats-panel';
 import { AppButton } from './atoms/app-button';
-import { Plus, RotateCcw, X, LayoutGrid, Table } from 'lucide-react';
+import { Plus, RotateCcw, X, LayoutGrid, Table, ArrowLeft } from 'lucide-react';
 import { cn } from '../lib/utils';
 
 // ─── Reducer ─────────────────────────────────────────────────────────────────
@@ -98,7 +98,6 @@ export default function ApplyTrackApp() {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [showAddForm, setShowAddForm] = useState(false);
   const [displayMode, setDisplayMode] = useState<'cards' | 'table'>('cards');
 
   useEffect(() => {
@@ -127,7 +126,6 @@ export default function ApplyTrackApp() {
     } else {
       await createApplication(data);
       dispatch({ type: 'ADD_APPLICATION', payload: data });
-      setShowAddForm(false);
     }
   }, [state.applications]);
 
@@ -171,6 +169,62 @@ export default function ApplyTrackApp() {
     );
   }
 
+  // ── Add view ──
+  if (state.viewMode === 'add') {
+    return (
+      <div className="min-h-screen bg-surface-base">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-6">
+          {/* ── Page title ── */}
+          <div>
+            <h1 className="text-golden-h3 font-bold text-slate-900 tracking-tight mb-1">
+              ApplyTrack
+            </h1>
+            <p className="text-golden-sm text-slate-500">
+              Platform pelacak proses rekrutmen dan pencarian kerja dalam satu tempat.
+            </p>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <AppButton
+              variant="secondary"
+              size="sm"
+              onClick={() => dispatch({ type: 'SET_VIEW', payload: { mode: 'list' } })}
+            >
+              <ArrowLeft size={15} aria-hidden="true" />
+              <span>Kembali ke Daftar Lamaran</span>
+            </AppButton>
+          </div>
+
+          <div className="bg-white border border-surface-border rounded-lg shadow-card">
+            {/* Header form */}
+            <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-surface-border">
+              <div>
+                <h2 className="text-golden-h4 font-bold text-slate-900">Tambah Lamaran Baru</h2>
+                <p className="text-golden-sm text-slate-400 mt-0.5">Isi detail lowongan yang kamu lamar.</p>
+              </div>
+              <button
+                onClick={() => dispatch({ type: 'SET_VIEW', payload: { mode: 'list' } })}
+                aria-label="Tutup form"
+                className="w-9 h-9 flex items-center justify-center rounded-md text-slate-400
+                  hover:text-slate-700 hover:bg-surface-panel transition-colors
+                  focus-visible:outline-none"
+              >
+                <X size={16} />
+              </button>
+            </div>
+            <div className="px-6 py-5">
+              <ApplicationForm
+                onSave={handleSave}
+                onCancel={() => dispatch({ type: 'SET_VIEW', payload: { mode: 'list' } })}
+                inlineMode
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // ── Detail view ──
   if (state.viewMode === 'detail' && selectedApp) {
     return (
@@ -210,6 +264,17 @@ export default function ApplyTrackApp() {
             <p className="text-golden-sm text-slate-500">
               Platform pelacak proses rekrutmen dan pencarian kerja dalam satu tempat.
             </p>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <AppButton
+              variant="secondary"
+              size="sm"
+              onClick={() => dispatch({ type: 'SET_VIEW', payload: { mode: 'list' } })}
+            >
+              <ArrowLeft size={15} aria-hidden="true" />
+              <span>Kembali ke Daftar Lamaran</span>
+            </AppButton>
           </div>
 
           <div className="bg-white border border-surface-border rounded-lg shadow-card">
@@ -263,35 +328,6 @@ export default function ApplyTrackApp() {
           <StatsPanel applications={state.applications} />
         )}
 
-        {/* ── Form tambah — muncul langsung di bawah statistik ── */}
-        {showAddForm && (
-          <div className="bg-white border border-surface-border rounded-lg shadow-card">
-            {/* Header form */}
-            <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-surface-border">
-              <div>
-                <h2 className="text-golden-h4 font-bold text-slate-900">Tambah Lamaran Baru</h2>
-                <p className="text-golden-sm text-slate-400 mt-0.5">Isi detail lowongan yang kamu lamar.</p>
-              </div>
-              <button
-                onClick={() => setShowAddForm(false)}
-                aria-label="Tutup form"
-                className="w-9 h-9 flex items-center justify-center rounded-md text-slate-400
-                  hover:text-slate-700 hover:bg-surface-panel transition-colors
-                  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/50"
-              >
-                <X size={16} />
-              </button>
-            </div>
-            <div className="px-6 py-5">
-              <ApplicationForm
-                onSave={handleSave}
-                onCancel={() => setShowAddForm(false)}
-                inlineMode
-              />
-            </div>
-          </div>
-        )}
-
         {/* ── Action bar: Tombol Tambah Lamaran di atas filter ── */}
         <div className="flex items-center justify-between pt-2">
           <div>
@@ -305,16 +341,14 @@ export default function ApplyTrackApp() {
             </p>
           </div>
 
-          {!showAddForm && (
-            <AppButton
-              variant="primary"
-              size="md"
-              onClick={() => setShowAddForm(true)}
-            >
-              <Plus size={16} aria-hidden="true" />
-              Tambah Lamaran
-            </AppButton>
-          )}
+          <AppButton
+            variant="primary"
+            size="md"
+            onClick={() => { window.location.href = '/add'; }}
+          >
+            <Plus size={16} aria-hidden="true" />
+            Tambah Lamaran
+          </AppButton>
         </div>
 
         {/* ── Search + Filter ── */}
@@ -350,10 +384,10 @@ export default function ApplyTrackApp() {
           hasFilters={hasFilters}
           isLoading={state.isLoading}
           displayMode={displayMode}
-          onView={(id) => dispatch({ type: 'SET_VIEW', payload: { mode: 'detail', id } })}
-          onEdit={(id) => dispatch({ type: 'SET_VIEW', payload: { mode: 'edit', id } })}
+          onView={(id) => { window.location.href = `/detail?id=${id}`; }}
+          onEdit={(id) => { window.location.href = `/edit?id=${id}`; }}
           onDelete={handleDeleteRequest}
-          onAddNew={() => setShowAddForm(true)}
+          onAddNew={() => { window.location.href = '/add'; }}
         />
 
         {/* ── Footer ── */}

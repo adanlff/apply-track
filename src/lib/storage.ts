@@ -42,6 +42,14 @@ export async function getApplications(): Promise<JobApplication[]> {
 }
 
 /**
+ * Fetch a single application by its ID
+ */
+export async function getApplicationById(id: string): Promise<JobApplication | undefined> {
+  const all = await getApplications();
+  return all.find((a) => a.id === id);
+}
+
+/**
  * Add a new application
  */
 export async function createApplication(application: JobApplication): Promise<JobApplication> {
