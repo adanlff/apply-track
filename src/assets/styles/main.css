@@ -26,7 +26,6 @@
 
   :focus-visible {
     outline: none;
-    box-shadow: 0 0 0 2px #fff, 0 0 0 4px rgba(29, 69, 51, 0.45);
   }
 
   ::selection {

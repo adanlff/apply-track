@@ -176,8 +176,9 @@ export function DatePicker({
         aria-haspopup="dialog"
         onClick={() => setIsOpen((prev) => !prev)}
         className={cn(
-          'flex h-11 w-full items-center justify-between gap-2 rounded-md bg-white px-3 py-2 text-slate-800 border border-neutral-300 transition-all hover:bg-neutral-50 hover:border-neutral-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500',
-          hasError && 'border-red-400 focus-visible:ring-red-400',
+          'flex h-11 w-full items-center justify-between gap-2 rounded-md bg-white px-3 py-2 text-slate-800 border border-neutral-300 transition-colors duration-150 shadow-none hover:bg-neutral-50 hover:border-neutral-400',
+          'focus:outline-none focus:border-neutral-400 focus:ring-0 focus:shadow-none focus-visible:outline-none focus-visible:border-neutral-400 focus-visible:ring-0 focus-visible:shadow-none',
+          hasError && 'border-red-400 focus:border-red-400 focus-visible:border-red-400',
           isOpen && 'border-neutral-400'
         )}
       >

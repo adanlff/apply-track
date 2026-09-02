@@ -138,7 +138,7 @@ export function ApplicationForm({ initial, onSave, onCancel, inlineMode = false 
   };
 
   return (
-    <section className={inlineMode ? '' : 'max-w-2xl mx-auto'}>
+    <section className="w-full">
       {/* Form header — only shown in standalone (edit) mode */}
       {!inlineMode && (
         <div className="flex items-center justify-between mb-6">

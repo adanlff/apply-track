@@ -13,11 +13,12 @@ export function AppSelect({ hasError = false, className = '', children, ...props
         className={[
           'w-full h-11 pl-3 pr-9 rounded-md appearance-none',
           'bg-white border text-slate-800 text-golden-base',
-          'transition-colors duration-150 cursor-pointer',
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/40 focus-visible:ring-offset-1 focus-visible:ring-offset-white',
+          'transition-colors duration-150 cursor-pointer shadow-none',
+          'focus:outline-none focus:border-neutral-400 focus:ring-0 focus:shadow-none',
+          'focus-visible:outline-none focus-visible:border-neutral-400 focus-visible:ring-0 focus-visible:shadow-none',
           hasError
-            ? 'border-red-400 focus-visible:ring-red-400/40'
-            : 'border-surface-border hover:border-surface-border-strong focus-visible:border-brand-400',
+            ? 'border-red-400 focus:border-red-400 focus-visible:border-red-400'
+            : 'border-surface-border hover:border-surface-border-strong',
           className,
         ].join(' ')}
       >
