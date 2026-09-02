@@ -58,12 +58,35 @@ export function ApplicationList({
 
   if (displayMode === 'table') {
     return (
-      <ApplicationTable
-        applications={applications}
-        onView={onView}
-        onEdit={onEdit}
-        onDelete={onDelete}
-      />
+      <>
+        {/* Desktop only: Table View */}
+        <div className="hidden lg:block">
+          <ApplicationTable
+            applications={applications}
+            onView={onView}
+            onEdit={onEdit}
+            onDelete={onDelete}
+          />
+        </div>
+
+        {/* Mobile & Tablet: Always Card View */}
+        <div
+          className="grid grid-cols-1 sm:grid-cols-2 gap-3 lg:hidden"
+          role="list"
+          aria-label={`${applications.length} lamaran kerja`}
+        >
+          {applications.map((app) => (
+            <div key={app.id} role="listitem">
+              <ApplicationCard
+                application={app}
+                onView={onView}
+                onEdit={onEdit}
+                onDelete={onDelete}
+              />
+            </div>
+          ))}
+        </div>
+      </>
     );
   }
 

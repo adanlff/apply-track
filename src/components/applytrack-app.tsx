@@ -25,7 +25,7 @@ const initialState: AppState = {
   filterDateFrom: '',
   filterDateTo: '',
   sortKey: 'appliedDate',
-  sortDir: 'desc',
+  sortDir: 'asc',
   isLoading: true,
   error: null,
 };
@@ -82,10 +82,18 @@ function deriveFilteredList(state: AppState): JobApplication[] {
 
   list.sort((a, b) => {
     let cmp = 0;
-    if (state.sortKey === 'appliedDate') cmp = a.appliedDate.localeCompare(b.appliedDate);
-    else if (state.sortKey === 'company') cmp = a.company.localeCompare(b.company);
-    else if (state.sortKey === 'position') cmp = a.position.localeCompare(b.position);
-    else if (state.sortKey === 'status') cmp = a.status.localeCompare(b.status);
+    if (state.sortKey === 'appliedDate') {
+      cmp = (a.appliedDate || '').localeCompare(b.appliedDate || '');
+      if (cmp === 0 && a.createdAt && b.createdAt) {
+        cmp = a.createdAt.localeCompare(b.createdAt);
+      }
+    } else if (state.sortKey === 'company') {
+      cmp = a.company.localeCompare(b.company);
+    } else if (state.sortKey === 'position') {
+      cmp = a.position.localeCompare(b.position);
+    } else if (state.sortKey === 'status') {
+      cmp = a.status.localeCompare(b.status);
+    }
     return state.sortDir === 'asc' ? cmp : -cmp;
   });
 

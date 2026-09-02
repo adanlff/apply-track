@@ -32,6 +32,7 @@ export function ApplicationTable({
         <table className="w-full text-left text-sm text-slate-700 border-collapse">
           <thead>
             <tr className="bg-neutral-50/80 border-b border-surface-border text-xs font-semibold text-slate-500 uppercase tracking-wider">
+              <th scope="col" className="px-4 py-3.5 w-12 text-center">No</th>
               <th scope="col" className="px-5 py-3.5">Posisi & Perusahaan</th>
               <th scope="col" className="px-4 py-3.5">Status</th>
               <th scope="col" className="px-4 py-3.5">Lokasi</th>
@@ -42,7 +43,7 @@ export function ApplicationTable({
             </tr>
           </thead>
           <tbody className="divide-y divide-surface-border">
-            {applications.map((app) => {
+            {applications.map((app, index) => {
               const companyInitials = app.company
                 ? app.company.slice(0, 2).toUpperCase()
                 : 'AT';
@@ -53,6 +54,11 @@ export function ApplicationTable({
                   onClick={() => onView(app.id)}
                   className="hover:bg-neutral-50/80 transition-colors cursor-pointer group"
                 >
+                  {/* Nomor Urut */}
+                  <td className="px-4 py-3.5 text-center text-xs font-medium text-slate-400">
+                    {index + 1}
+                  </td>
+
                   {/* Posisi & Perusahaan */}
                   <td className="px-5 py-3.5">
                     <div className="flex items-center gap-3 min-w-[200px]">

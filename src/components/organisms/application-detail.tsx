@@ -31,12 +31,12 @@ export function ApplicationDetail({ application, onBack, onEdit, onDelete }: App
   return (
     <section className="w-full space-y-6">
       {/* ── Top Bar: Back & Actions ── */}
-      <div className="flex items-center justify-between flex-wrap gap-3">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <AppButton variant="secondary" size="sm" onClick={onBack}>
           <ArrowLeft size={15} aria-hidden="true" />
           <span>Kembali ke Daftar Lamaran</span>
         </AppButton>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center justify-end gap-2 w-full sm:w-auto">
           <AppButton variant="secondary" size="sm" onClick={() => onEdit(application.id)}>
             <Edit2 size={14} aria-hidden="true" />
             <span>Edit Lamaran</span>

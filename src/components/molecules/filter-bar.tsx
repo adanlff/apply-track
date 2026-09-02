@@ -57,47 +57,63 @@ export function FilterBar({
   }, [applications]);
 
   return (
-    <div className="flex flex-wrap gap-2 items-center">
-      {/* Status filter with StaggeredDropDown */}
-      <div className="w-44">
+    <div className="flex flex-col lg:flex-row gap-2.5 lg:items-center">
+      {/* ── Status & Kota (Grid di Mobile/Tablet, Inline di Desktop) ── */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:flex lg:items-center gap-2.5">
+        {/* Status filter */}
+        <div className="w-full lg:w-44">
+          <StaggeredDropDown
+            id="filter-status"
+            aria-label="Filter status lamaran"
+            items={STATUS_ITEMS}
+            selectedValue={filterStatus}
+            onSelect={(val) => onFilterStatus(val as FilterStatus)}
+            placeholder="Status"
+          />
+        </div>
+
+        {/* Dynamic City / Location Filter (Tampil di sebelah Status untuk Mobile/Tablet) */}
+        <div className="w-full lg:hidden">
+          <StaggeredDropDown
+            id="filter-location-mobile"
+            aria-label="Filter berdasarkan kota"
+            items={locationItems}
+            selectedValue={filterLocation || 'all'}
+            onSelect={onFilterLocation}
+            placeholder="Pilih Kota"
+          />
+        </div>
+      </div>
+
+      {/* ── Date Range (Dari tanggal s/d Sampai tanggal) ── */}
+      <div className="flex items-center gap-2 w-full lg:w-auto">
+        <div className="flex-1 lg:w-40 min-w-0">
+          <DatePicker
+            id="filter-date-from"
+            aria-label="Filter dari tanggal"
+            placeholder="Dari tanggal"
+            value={filterDateFrom}
+            onChange={(val) => onFilterDate(val, filterDateTo)}
+          />
+        </div>
+
+        <span className="text-slate-400 text-xs font-medium shrink-0 px-0.5">s/d</span>
+
+        <div className="flex-1 lg:w-40 min-w-0">
+          <DatePicker
+            id="filter-date-to"
+            aria-label="Filter sampai tanggal"
+            placeholder="Sampai tanggal"
+            value={filterDateTo}
+            onChange={(val) => onFilterDate(filterDateFrom, val)}
+          />
+        </div>
+      </div>
+
+      {/* ── Desktop Only: Kota Filter di sisi kanan ── */}
+      <div className="hidden lg:block lg:w-44 lg:ml-auto">
         <StaggeredDropDown
-          id="filter-status"
-          aria-label="Filter status lamaran"
-          items={STATUS_ITEMS}
-          selectedValue={filterStatus}
-          onSelect={(val) => onFilterStatus(val as FilterStatus)}
-          placeholder="Status"
-        />
-      </div>
-
-      {/* Date from with Custom Calendar DatePicker */}
-      <div className="w-40">
-        <DatePicker
-          id="filter-date-from"
-          aria-label="Filter dari tanggal"
-          placeholder="Dari tanggal"
-          value={filterDateFrom}
-          onChange={(val) => onFilterDate(val, filterDateTo)}
-        />
-      </div>
-
-      <span className="text-slate-400 text-golden-sm shrink-0">s/d</span>
-
-      {/* Date to with Custom Calendar DatePicker */}
-      <div className="w-40">
-        <DatePicker
-          id="filter-date-to"
-          aria-label="Filter sampai tanggal"
-          placeholder="Sampai tanggal"
-          value={filterDateTo}
-          onChange={(val) => onFilterDate(filterDateFrom, val)}
-        />
-      </div>
-
-      {/* Dynamic City / Location Filter with StaggeredDropDown */}
-      <div className="w-44 ml-auto">
-        <StaggeredDropDown
-          id="filter-location"
+          id="filter-location-desktop"
           aria-label="Filter berdasarkan kota"
           items={locationItems}
           selectedValue={filterLocation || 'all'}
@@ -106,8 +122,8 @@ export function FilterBar({
         />
       </div>
 
-      {/* Mode Switcher: Cards vs Table (next to Kota) */}
-      <div className="inline-flex items-center p-0.5 rounded-md border border-neutral-300 bg-white h-11 shrink-0">
+      {/* ── Desktop Only: Mode Switcher: Cards vs Table ── */}
+      <div className="hidden lg:inline-flex items-center p-0.5 rounded-md border border-neutral-300 bg-white h-11 shrink-0">
         <button
           type="button"
           onClick={() => onDisplayModeChange('cards')}
