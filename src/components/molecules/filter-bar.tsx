@@ -1,4 +1,5 @@
 import { StaggeredDropDown, type DropdownItem } from '../atoms/staggered-dropdown';
+import { DatePicker } from '../atoms/date-picker';
 import type { FilterStatus, ApplicationStatus, SortKey, SortDir } from '../../types/applytrack-types';
 import { STATUS_LABELS } from '../../types/applytrack-types';
 import { Calendar, Building2, Briefcase, Tag } from 'lucide-react';
@@ -29,9 +30,6 @@ const SORT_ITEMS: DropdownItem[] = [
   { text: 'Status', value: 'status', icon: Tag },
 ];
 
-const inputBase =
-  'h-11 px-3 rounded-md bg-white border border-neutral-300 text-slate-800 text-golden-sm hover:border-neutral-400 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-1 focus-visible:ring-offset-white';
-
 export function FilterBar({
   filterStatus,
   filterDateFrom,
@@ -56,27 +54,29 @@ export function FilterBar({
         />
       </div>
 
-      {/* Date from */}
-      <input
-        id="filter-date-from"
-        type="date"
-        aria-label="Filter dari tanggal"
-        value={filterDateFrom}
-        onChange={(e) => onFilterDate(e.target.value, filterDateTo)}
-        className={inputBase}
-      />
+      {/* Date from with Custom Calendar DatePicker */}
+      <div className="w-40">
+        <DatePicker
+          id="filter-date-from"
+          aria-label="Filter dari tanggal"
+          placeholder="Dari tanggal"
+          value={filterDateFrom}
+          onChange={(val) => onFilterDate(val, filterDateTo)}
+        />
+      </div>
 
       <span className="text-slate-400 text-golden-sm shrink-0">s/d</span>
 
-      {/* Date to */}
-      <input
-        id="filter-date-to"
-        type="date"
-        aria-label="Filter sampai tanggal"
-        value={filterDateTo}
-        onChange={(e) => onFilterDate(filterDateFrom, e.target.value)}
-        className={inputBase}
-      />
+      {/* Date to with Custom Calendar DatePicker */}
+      <div className="w-40">
+        <DatePicker
+          id="filter-date-to"
+          aria-label="Filter sampai tanggal"
+          placeholder="Sampai tanggal"
+          value={filterDateTo}
+          onChange={(val) => onFilterDate(filterDateFrom, val)}
+        />
+      </div>
 
       {/* Sort with StaggeredDropDown */}
       <div className="flex gap-1.5 ml-auto">

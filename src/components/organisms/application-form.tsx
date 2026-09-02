@@ -4,6 +4,7 @@ import { JOB_TYPE_LABELS, SOURCE_OPTIONS, STATUS_LABELS } from '../../types/appl
 import { FormField } from '../molecules/form-field';
 import { AppButton } from '../atoms/app-button';
 import { StaggeredDropDown, type DropdownItem } from '../atoms/staggered-dropdown';
+import { DatePicker } from '../atoms/date-picker';
 import { generateId, toInputDate } from '../../lib/utils';
 import { X } from 'lucide-react';
 
@@ -210,17 +211,26 @@ export function ApplicationForm({ initial, onSave, onCancel, inlineMode = false 
               value={formData.location}
               onChange={(e) => set('location', e.target.value)}
             />
-            <FormField
-              id="field-applied-date"
-              label="Tanggal Melamar"
-              required
-              error={errors.appliedDate}
-              as="input"
-              type="date"
-              value={formData.appliedDate}
-              onChange={(e) => set('appliedDate', e.target.value)}
-              onBlur={() => handleBlur('appliedDate')}
-            />
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="field-applied-date" className="text-golden-sm font-semibold text-slate-700 flex items-center gap-1">
+                Tanggal Melamar
+                <span className="text-red-500 text-golden-xs" aria-hidden="true">*</span>
+              </label>
+              <DatePicker
+                id="field-applied-date"
+                aria-label="Tanggal melamar"
+                placeholder="Pilih tanggal melamar"
+                value={formData.appliedDate}
+                onChange={(val) => set('appliedDate', val)}
+                hasError={!!errors.appliedDate}
+              />
+              {errors.appliedDate && (
+                <p role="alert" className="text-golden-sm text-red-600 flex items-center gap-1">
+                  <span aria-hidden="true">⚠</span>
+                  {errors.appliedDate}
+                </p>
+              )}
+            </div>
           </div>
 
           {/* Row: Job Type + Status */}
