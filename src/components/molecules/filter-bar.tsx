@@ -1,9 +1,10 @@
 import { useMemo } from 'react';
 import { StaggeredDropDown, type DropdownItem } from '../atoms/staggered-dropdown';
 import { DatePicker } from '../atoms/date-picker';
-import type { FilterStatus, ApplicationStatus, JobApplication } from '../../types/applytrack-types';
+import type { FilterStatus, JobApplication } from '../../types/applytrack-types';
 import { STATUS_LABELS } from '../../types/applytrack-types';
-import { MapPin } from 'lucide-react';
+import { MapPin, LayoutGrid, Table } from 'lucide-react';
+import { cn } from '../../lib/utils';
 
 interface FilterBarProps {
   applications: JobApplication[];
@@ -11,9 +12,11 @@ interface FilterBarProps {
   filterLocation: string;
   filterDateFrom: string;
   filterDateTo: string;
+  displayMode: 'cards' | 'table';
   onFilterStatus: (value: FilterStatus) => void;
   onFilterLocation: (value: string) => void;
   onFilterDate: (from: string, to: string) => void;
+  onDisplayModeChange: (mode: 'cards' | 'table') => void;
 }
 
 const STATUS_ITEMS: DropdownItem[] = [
@@ -30,9 +33,11 @@ export function FilterBar({
   filterLocation,
   filterDateFrom,
   filterDateTo,
+  displayMode,
   onFilterStatus,
   onFilterLocation,
   onFilterDate,
+  onDisplayModeChange,
 }: FilterBarProps) {
   // Extract unique locations dynamically from current applications
   const locationItems: DropdownItem[] = useMemo(() => {
@@ -90,7 +95,7 @@ export function FilterBar({
       </div>
 
       {/* Dynamic City / Location Filter with StaggeredDropDown */}
-      <div className="w-48 ml-auto">
+      <div className="w-44 ml-auto">
         <StaggeredDropDown
           id="filter-location"
           aria-label="Filter berdasarkan kota"
@@ -99,6 +104,40 @@ export function FilterBar({
           onSelect={onFilterLocation}
           placeholder="Pilih Kota"
         />
+      </div>
+
+      {/* Mode Switcher: Cards vs Table (next to Kota) */}
+      <div className="inline-flex items-center p-0.5 rounded-md border border-neutral-300 bg-white h-11 shrink-0">
+        <button
+          type="button"
+          onClick={() => onDisplayModeChange('cards')}
+          className={cn(
+            'flex items-center gap-1.5 h-full px-3 rounded text-xs font-medium transition-all',
+            displayMode === 'cards'
+              ? 'bg-neutral-100 text-slate-900 font-semibold'
+              : 'text-slate-500 hover:text-slate-900 hover:bg-neutral-50'
+          )}
+          aria-label="Tampilan Kartu"
+          title="Tampilan Kartu"
+        >
+          <LayoutGrid size={15} />
+          <span>Kartu</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => onDisplayModeChange('table')}
+          className={cn(
+            'flex items-center gap-1.5 h-full px-3 rounded text-xs font-medium transition-all',
+            displayMode === 'table'
+              ? 'bg-neutral-100 text-slate-900 font-semibold'
+              : 'text-slate-500 hover:text-slate-900 hover:bg-neutral-50'
+          )}
+          aria-label="Tampilan Tabel"
+          title="Tampilan Tabel"
+        >
+          <Table size={15} />
+          <span>Tabel</span>
+        </button>
       </div>
     </div>
   );

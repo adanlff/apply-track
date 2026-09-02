@@ -10,7 +10,8 @@ import { ApplicationForm } from './organisms/application-form';
 import { ApplicationDetail } from './organisms/application-detail';
 import { StatsPanel } from './organisms/stats-panel';
 import { AppButton } from './atoms/app-button';
-import { Plus, RotateCcw, X } from 'lucide-react';
+import { Plus, RotateCcw, X, LayoutGrid, Table } from 'lucide-react';
+import { cn } from '../lib/utils';
 
 // ─── Reducer ─────────────────────────────────────────────────────────────────
 
@@ -98,6 +99,7 @@ export default function ApplyTrackApp() {
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [displayMode, setDisplayMode] = useState<'cards' | 'table'>('cards');
 
   useEffect(() => {
     getApplications()
@@ -173,7 +175,7 @@ export default function ApplyTrackApp() {
   if (state.viewMode === 'detail' && selectedApp) {
     return (
       <div className="min-h-screen bg-surface-base">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
           <ApplicationDetail
             application={selectedApp}
             onBack={() => dispatch({ type: 'SET_VIEW', payload: { mode: 'list' } })}
@@ -181,15 +183,6 @@ export default function ApplyTrackApp() {
             onDelete={handleDeleteRequest}
           />
         </div>
-        <ConfirmDialog
-          isOpen={!!deleteTarget}
-          title="Hapus Lamaran"
-          description="Lamaran ini akan dihapus secara permanen dan tidak bisa dikembalikan."
-          confirmLabel="Hapus Lamaran"
-          onConfirm={handleDeleteConfirm}
-          onCancel={() => setDeleteTarget(null)}
-          loading={isDeleting}
-        />
       </div>
     );
   }
@@ -198,7 +191,7 @@ export default function ApplyTrackApp() {
   if (state.viewMode === 'edit' && selectedApp) {
     return (
       <div className="min-h-screen bg-surface-base">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
           <ApplicationForm
             initial={selectedApp}
             onSave={handleSave}
@@ -219,10 +212,8 @@ export default function ApplyTrackApp() {
           <h1 className="text-golden-h3 font-bold text-slate-900 tracking-tight mb-1">
             ApplyTrack
           </h1>
-          <p className="text-golden-sm text-slate-400">
-            {state.applications.length > 0
-              ? `${state.applications.length} lamaran tercatat`
-              : 'Lacak semua lamaran kerja dalam satu tempat'}
+          <p className="text-golden-sm text-slate-500">
+            Platform pelacak proses rekrutmen dan pencarian kerja dalam satu tempat.
           </p>
         </div>
 
@@ -262,9 +253,17 @@ export default function ApplyTrackApp() {
 
         {/* ── Action bar: Tombol Tambah Lamaran di atas filter ── */}
         <div className="flex items-center justify-between pt-2">
-          <h2 className="text-golden-h4 font-bold text-slate-800">
-            Daftar Lamaran
-          </h2>
+          <div>
+            <h2 className="text-golden-h4 font-bold text-slate-800">
+              Daftar Lamaran
+            </h2>
+            <p className="text-golden-sm text-slate-400 mt-0.5">
+              {state.applications.length > 0
+                ? `${state.applications.length} lamaran tercatat`
+                : 'Belum ada lamaran'}
+            </p>
+          </div>
+
           {!showAddForm && (
             <AppButton
               variant="primary"
@@ -289,9 +288,11 @@ export default function ApplyTrackApp() {
             filterLocation={state.filterLocation}
             filterDateFrom={state.filterDateFrom}
             filterDateTo={state.filterDateTo}
+            displayMode={displayMode}
             onFilterStatus={(v) => dispatch({ type: 'SET_FILTER_STATUS', payload: v })}
             onFilterLocation={(loc) => dispatch({ type: 'SET_FILTER_LOCATION', payload: loc })}
             onFilterDate={(from, to) => dispatch({ type: 'SET_FILTER_DATE', payload: { from, to } })}
+            onDisplayModeChange={setDisplayMode}
           />
           {!state.isLoading && hasFilters && (
             <p className="text-golden-sm text-slate-400" aria-live="polite">
@@ -302,11 +303,12 @@ export default function ApplyTrackApp() {
           )}
         </div>
 
-        {/* ── Daftar lamaran ── */}
+        {/* ── Daftar lamaran (Cards / Table) ── */}
         <ApplicationList
           applications={filteredList}
           hasFilters={hasFilters}
           isLoading={state.isLoading}
+          displayMode={displayMode}
           onView={(id) => dispatch({ type: 'SET_VIEW', payload: { mode: 'detail', id } })}
           onEdit={(id) => dispatch({ type: 'SET_VIEW', payload: { mode: 'edit', id } })}
           onDelete={handleDeleteRequest}

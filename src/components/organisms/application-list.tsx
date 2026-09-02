@@ -1,11 +1,13 @@
 import type { JobApplication } from '../../types/applytrack-types';
 import { ApplicationCard } from './application-card';
+import { ApplicationTable } from './application-table';
 import { EmptyState } from './empty-state';
 
 interface ApplicationListProps {
   applications: JobApplication[];
   hasFilters: boolean;
   isLoading: boolean;
+  displayMode?: 'cards' | 'table';
   onView: (id: string) => void;
   onEdit: (id: string) => void;
   onDelete: (id: string) => void;
@@ -34,6 +36,7 @@ export function ApplicationList({
   applications,
   hasFilters,
   isLoading,
+  displayMode = 'cards',
   onView,
   onEdit,
   onDelete,
@@ -51,6 +54,17 @@ export function ApplicationList({
 
   if (applications.length === 0) {
     return <EmptyState hasFilters={hasFilters} onAddNew={onAddNew} />;
+  }
+
+  if (displayMode === 'table') {
+    return (
+      <ApplicationTable
+        applications={applications}
+        onView={onView}
+        onEdit={onEdit}
+        onDelete={onDelete}
+      />
+    );
   }
 
   return (
