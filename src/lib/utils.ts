@@ -19,10 +19,19 @@ export function generateId(): string {
 }
 
 /**
- * Formats a date string (ISO format) to localized Indonesian display format.
+ * Formats a date string (ISO format or YYYY-MM-DD) to localized Indonesian display format.
  */
 export function formatDate(dateStr: string): string {
   if (!dateStr) return '-';
+  if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+    const [year, month, day] = dateStr.split('-').map(Number);
+    const date = new Date(year, month - 1, day);
+    return new Intl.DateTimeFormat('id-ID', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+    }).format(date);
+  }
   const date = new Date(dateStr);
   return new Intl.DateTimeFormat('id-ID', {
     day: 'numeric',
@@ -59,10 +68,19 @@ export function formatSalary(min?: number, max?: number, currency = 'IDR'): stri
  * Calculates days since application date for time-elapsed display.
  */
 export function daysSince(dateStr: string): number {
+  if (!dateStr) return 0;
   const now = new Date();
-  const applied = new Date(dateStr);
+  now.setHours(0, 0, 0, 0);
+  let applied: Date;
+  if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+    const [year, month, day] = dateStr.split('-').map(Number);
+    applied = new Date(year, month - 1, day);
+  } else {
+    applied = new Date(dateStr);
+    applied.setHours(0, 0, 0, 0);
+  }
   const diff = now.getTime() - applied.getTime();
-  return Math.floor(diff / (1000 * 60 * 60 * 24));
+  return Math.max(0, Math.floor(diff / (1000 * 60 * 60 * 24)));
 }
 
 /**
@@ -72,3 +90,4 @@ export function truncate(str: string, maxLength: number): string {
   if (str.length <= maxLength) return str;
   return `${str.slice(0, maxLength)}…`;
 }
+

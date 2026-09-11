@@ -192,7 +192,7 @@ export function ApplicationDetail({ application, onBack, onEdit, onDelete }: App
                       <div className="flex items-center gap-2 flex-wrap">
                         <AppBadge status={entry.status} size="sm" />
                         <time className="text-xs text-slate-400">
-                          {formatDate(entry.changedAt)}
+                          {formatDate(entry.status === 'applied' ? (application.appliedDate || entry.changedAt) : entry.changedAt)}
                         </time>
                       </div>
                       {entry.note && (

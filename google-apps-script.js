@@ -127,6 +127,13 @@ function handleCreate(sheet, data) {
   if (!data.createdAt) data.createdAt = now;
   data.updatedAt = now;
   
+  const initialHistory = data.status === 'applied'
+    ? [{ status: 'applied', changedAt: data.appliedDate || now }]
+    : [
+        { status: 'applied', changedAt: data.appliedDate || now },
+        { status: data.status || 'applied', changedAt: now }
+      ];
+
   const row = [
     data.id || '',
     data.company || '',
@@ -138,7 +145,7 @@ function handleCreate(sheet, data) {
     data.jobUrl || '',
     data.status || 'applied',
     data.notes || '',
-    JSON.stringify(data.statusHistory || [{ status: data.status || 'applied', changedAt: now }]),
+    JSON.stringify(data.statusHistory && data.statusHistory.length > 0 ? data.statusHistory : initialHistory),
     data.createdAt,
     data.updatedAt
   ];

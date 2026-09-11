@@ -110,7 +110,38 @@ export function ApplicationForm({ initial, onSave, onCancel, inlineMode = false 
     try {
       const now = new Date().toISOString();
       const statusChanged = initial && initial.status !== formData.status;
-      const historyEntry = { status: formData.status, changedAt: now };
+
+      let updatedHistory = initial?.statusHistory ? [...initial.statusHistory] : [];
+
+      if (updatedHistory.length === 0) {
+        if (formData.status === 'applied') {
+          updatedHistory = [{ status: 'applied', changedAt: formData.appliedDate }];
+        } else {
+          updatedHistory = [
+            { status: 'applied', changedAt: formData.appliedDate },
+            { status: formData.status, changedAt: now },
+          ];
+        }
+      } else {
+        // Sync the initial 'applied' entry with the updated appliedDate
+        const appliedIdx = updatedHistory.findIndex((h) => h.status === 'applied');
+        if (appliedIdx !== -1) {
+          updatedHistory[appliedIdx] = {
+            ...updatedHistory[appliedIdx],
+            changedAt: formData.appliedDate,
+          };
+        } else if (updatedHistory.length > 0) {
+          updatedHistory[0] = {
+            ...updatedHistory[0],
+            changedAt: formData.appliedDate,
+          };
+        }
+
+        // If status changed to a new status, append to history
+        if (statusChanged) {
+          updatedHistory.push({ status: formData.status, changedAt: now });
+        }
+      }
 
       const application: JobApplication = {
         id: initial?.id ?? generateId(),
@@ -124,9 +155,7 @@ export function ApplicationForm({ initial, onSave, onCancel, inlineMode = false 
         status: formData.status,
         currency: 'IDR',
         notes: formData.notes.trim() || undefined,
-        statusHistory: statusChanged
-          ? [...(initial?.statusHistory ?? []), historyEntry]
-          : (initial?.statusHistory ?? [{ status: formData.status, changedAt: now }]),
+        statusHistory: updatedHistory,
         createdAt: initial?.createdAt ?? now,
         updatedAt: now,
       };

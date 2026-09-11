@@ -1,7 +1,7 @@
 import type { JobApplication } from '../../types/applytrack-types';
 import { JOB_TYPE_LABELS } from '../../types/applytrack-types';
 import { AppBadge } from '../atoms/app-badge';
-import { formatDate } from '../../lib/utils';
+import { formatDate, truncate } from '../../lib/utils';
 import {
   MapPin,
   Calendar,
@@ -33,7 +33,7 @@ export function ApplicationTable({
           <thead>
             <tr className="bg-neutral-50/80 border-b border-surface-border text-xs font-semibold text-slate-500 uppercase tracking-wider">
               <th scope="col" className="px-4 py-3.5 w-12 text-center">No</th>
-              <th scope="col" className="px-5 py-3.5">Posisi & Perusahaan</th>
+              <th scope="col" className="px-5 py-3.5 max-w-[260px]">Posisi & Perusahaan</th>
               <th scope="col" className="px-4 py-3.5">Status</th>
               <th scope="col" className="px-4 py-3.5">Lokasi</th>
               <th scope="col" className="px-4 py-3.5">Tipe Pekerjaan</th>
@@ -60,17 +60,23 @@ export function ApplicationTable({
                   </td>
 
                   {/* Posisi & Perusahaan */}
-                  <td className="px-5 py-3.5">
-                    <div className="flex items-center gap-3 min-w-[200px]">
+                  <td className="px-5 py-3.5 max-w-[260px]">
+                    <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-md bg-neutral-100 border border-neutral-200 flex items-center justify-center shrink-0 text-slate-700 font-bold text-xs">
                         {companyInitials}
                       </div>
-                      <div className="min-w-0">
-                        <div className="font-semibold text-slate-900 group-hover:text-brand-600 transition-colors truncate">
-                          {app.position}
+                      <div className="min-w-0 flex-1">
+                        <div
+                          className="font-semibold text-slate-900 group-hover:text-brand-600 transition-colors truncate"
+                          title={app.position}
+                        >
+                          {truncate(app.position, 30)}
                         </div>
-                        <div className="text-xs text-slate-500 truncate">
-                          {app.company}
+                        <div
+                          className="text-xs text-slate-500 truncate"
+                          title={app.company}
+                        >
+                          {truncate(app.company, 32)}
                         </div>
                       </div>
                     </div>

@@ -43,10 +43,16 @@ export function ApplicationCard({ application, onView, onEdit, onDelete }: Appli
               {companyInitials}
             </div>
             <div className="min-w-0">
-              <h3 className="text-base font-bold text-slate-900 group-hover:text-brand-600 transition-colors truncate">
+              <h3
+                className="text-base font-bold text-slate-900 group-hover:text-brand-600 transition-colors truncate"
+                title={application.position}
+              >
                 {application.position}
               </h3>
-              <p className="text-sm font-medium text-slate-500 truncate">
+              <p
+                className="text-sm font-medium text-slate-500 truncate"
+                title={application.company}
+              >
                 {application.company}
               </p>
             </div>
