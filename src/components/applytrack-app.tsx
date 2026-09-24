@@ -182,51 +182,32 @@ export default function ApplyTrackApp() {
     return (
       <div className="min-h-screen bg-surface-base">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-6">
-          {/* ── Page title ── */}
-          <div>
-            <h1 className="text-golden-h3 font-bold text-slate-900 tracking-tight mb-1">
-              ApplyTrack
-            </h1>
-            <p className="text-golden-sm text-slate-500">
-              Platform pelacak proses rekrutmen dan pencarian kerja dalam satu tempat.
-            </p>
-          </div>
-
-          <div className="flex items-center justify-between">
-            <AppButton
-              variant="secondary"
-              size="sm"
+          {/* ── Top Bar: Back ── */}
+          <div className="flex items-center justify-between gap-3">
+            <button
+              type="button"
               onClick={() => dispatch({ type: 'SET_VIEW', payload: { mode: 'list' } })}
+              className="inline-flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors"
             >
-              <ArrowLeft size={15} aria-hidden="true" />
-              <span>Kembali ke Daftar Lamaran</span>
-            </AppButton>
+              <span className="w-9 h-9 rounded-lg bg-white border border-surface-border shadow-sm flex items-center justify-center text-slate-500 shrink-0">
+                <ArrowLeft size={16} />
+              </span>
+              <span className="hidden sm:inline">Kembali ke Daftar Lamaran</span>
+              <span className="inline sm:hidden text-xs">Kembali</span>
+            </button>
           </div>
 
-          <div className="bg-white border border-surface-border rounded-lg shadow-card">
-            {/* Header form */}
-            <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-surface-border">
-              <div>
-                <h2 className="text-golden-h4 font-bold text-slate-900">Tambah Lamaran Baru</h2>
-                <p className="text-golden-sm text-slate-400 mt-0.5">Isi detail lowongan yang kamu lamar.</p>
-              </div>
-              <button
-                onClick={() => dispatch({ type: 'SET_VIEW', payload: { mode: 'list' } })}
-                aria-label="Tutup form"
-                className="w-9 h-9 flex items-center justify-center rounded-md text-slate-400
-                  hover:text-slate-700 hover:bg-surface-panel transition-colors
-                  focus-visible:outline-none"
-              >
-                <X size={16} />
-              </button>
+          <div className="bg-white border border-surface-border rounded-lg shadow-card p-6 sm:p-7">
+            <div className="pb-5 mb-5 border-b border-surface-border">
+              <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+                Tambah Lamaran Baru
+              </h1>
             </div>
-            <div className="px-6 py-5">
-              <ApplicationForm
-                onSave={handleSave}
-                onCancel={() => dispatch({ type: 'SET_VIEW', payload: { mode: 'list' } })}
-                inlineMode
-              />
-            </div>
+            <ApplicationForm
+              onSave={handleSave}
+              onCancel={() => dispatch({ type: 'SET_VIEW', payload: { mode: 'list' } })}
+              inlineMode
+            />
           </div>
         </div>
       </div>
@@ -238,16 +219,6 @@ export default function ApplyTrackApp() {
     return (
       <div className="min-h-screen bg-surface-base">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-6">
-          {/* ── Page title ── */}
-          <div>
-            <h1 className="text-golden-h3 font-bold text-slate-900 tracking-tight mb-1">
-              ApplyTrack
-            </h1>
-            <p className="text-golden-sm text-slate-500">
-              Platform pelacak proses rekrutmen dan pencarian kerja dalam satu tempat.
-            </p>
-          </div>
-
           <ApplicationDetail
             application={selectedApp}
             onBack={() => dispatch({ type: 'SET_VIEW', payload: { mode: 'list' } })}
@@ -264,52 +235,33 @@ export default function ApplyTrackApp() {
     return (
       <div className="min-h-screen bg-surface-base">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-6">
-          {/* ── Page title ── */}
-          <div>
-            <h1 className="text-golden-h3 font-bold text-slate-900 tracking-tight mb-1">
-              ApplyTrack
-            </h1>
-            <p className="text-golden-sm text-slate-500">
-              Platform pelacak proses rekrutmen dan pencarian kerja dalam satu tempat.
-            </p>
-          </div>
-
-          <div className="flex items-center justify-between">
-            <AppButton
-              variant="secondary"
-              size="sm"
+          {/* ── Top Bar: Back ── */}
+          <div className="flex items-center justify-between gap-3">
+            <button
+              type="button"
               onClick={() => dispatch({ type: 'SET_VIEW', payload: { mode: 'list' } })}
+              className="inline-flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors"
             >
-              <ArrowLeft size={15} aria-hidden="true" />
-              <span>Kembali ke Daftar Lamaran</span>
-            </AppButton>
+              <span className="w-9 h-9 rounded-lg bg-white border border-surface-border shadow-sm flex items-center justify-center text-slate-500 shrink-0">
+                <ArrowLeft size={16} />
+              </span>
+              <span className="hidden sm:inline">Kembali ke Daftar Lamaran</span>
+              <span className="inline sm:hidden text-xs">Kembali</span>
+            </button>
           </div>
 
-          <div className="bg-white border border-surface-border rounded-lg shadow-card">
-            {/* Header form */}
-            <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-surface-border">
-              <div>
-                <h2 className="text-golden-h4 font-bold text-slate-900">Edit Lamaran</h2>
-                <p className="text-golden-sm text-slate-400 mt-0.5">Perbarui informasi lamaran kerja.</p>
-              </div>
-              <button
-                onClick={() => dispatch({ type: 'SET_VIEW', payload: { mode: 'list' } })}
-                aria-label="Tutup form"
-                className="w-9 h-9 flex items-center justify-center rounded-md text-slate-400
-                  hover:text-slate-700 hover:bg-surface-panel transition-colors
-                  focus-visible:outline-none"
-              >
-                <X size={16} />
-              </button>
+          <div className="bg-white border border-surface-border rounded-lg shadow-card p-6 sm:p-7">
+            <div className="pb-5 mb-5 border-b border-surface-border">
+              <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+                Edit Lamaran
+              </h1>
             </div>
-            <div className="px-6 py-5">
-              <ApplicationForm
-                initial={selectedApp}
-                onSave={handleSave}
-                onCancel={() => dispatch({ type: 'SET_VIEW', payload: { mode: 'list' } })}
-                inlineMode
-              />
-            </div>
+            <ApplicationForm
+              initial={selectedApp}
+              onSave={handleSave}
+              onCancel={() => dispatch({ type: 'SET_VIEW', payload: { mode: 'list' } })}
+              inlineMode
+            />
           </div>
         </div>
       </div>

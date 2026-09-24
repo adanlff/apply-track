@@ -97,8 +97,6 @@ export default function DetailPage() {
   return (
     <div className="min-h-screen bg-surface-base">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-6">
-
-
         <ApplicationDetail
           application={application}
           onBack={handleBack}

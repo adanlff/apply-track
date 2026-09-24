@@ -31,20 +31,36 @@ export function ApplicationDetail({ application, onBack, onEdit, onDelete }: App
   return (
     <section className="w-full space-y-6">
       {/* ── Top Bar: Back & Actions ── */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-        <AppButton variant="secondary" size="sm" onClick={onBack}>
-          <ArrowLeft size={15} aria-hidden="true" />
-          <span>Kembali ke Daftar Lamaran</span>
-        </AppButton>
-        <div className="flex items-center justify-end gap-2 w-full sm:w-auto">
-          <AppButton variant="secondary" size="sm" onClick={() => onEdit(application.id)}>
-            <Edit2 size={14} aria-hidden="true" />
+      <div className="flex items-center justify-between gap-3">
+        <button
+          type="button"
+          onClick={onBack}
+          className="inline-flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors"
+        >
+          <span className="w-9 h-9 rounded-lg bg-white border border-surface-border shadow-sm flex items-center justify-center text-slate-500 shrink-0">
+            <ArrowLeft size={16} />
+          </span>
+          <span className="hidden sm:inline">Kembali ke Daftar Lamaran</span>
+          <span className="inline sm:hidden text-xs">Kembali</span>
+        </button>
+
+        <div className="flex items-center gap-2 shrink-0">
+          <button
+            type="button"
+            onClick={() => onEdit(application.id)}
+            className="inline-flex items-center gap-1.5 px-3 py-2 text-xs sm:text-sm font-medium rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-900 hover:border-slate-300 transition-all shadow-sm"
+          >
+            <Edit2 size={14} className="text-slate-500" />
             <span>Edit Lamaran</span>
-          </AppButton>
-          <AppButton variant="danger" size="sm" onClick={() => onDelete(application.id)}>
-            <Trash2 size={14} aria-hidden="true" />
+          </button>
+          <button
+            type="button"
+            onClick={() => onDelete(application.id)}
+            className="inline-flex items-center gap-1.5 px-3 py-2 text-xs sm:text-sm font-medium rounded-lg bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 hover:border-red-300 transition-all"
+          >
+            <Trash2 size={14} />
             <span>Hapus</span>
-          </AppButton>
+          </button>
         </div>
       </div>
 
